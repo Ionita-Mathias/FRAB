@@ -1,0 +1,22 @@
+{
+  "name": "@livetrack/geo",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "GPX route preprocessing, live-fix snapping and grade-adjusted ETA",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run",
+    "clean": "rm -rf dist .turbo"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vitest": "^4.1.10"
+  }
+}

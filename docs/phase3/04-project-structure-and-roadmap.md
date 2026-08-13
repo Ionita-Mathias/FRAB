@@ -130,11 +130,14 @@ flowchart LR
 - The emitter generates a **256-bit session key** and puts it in the share link's
   **fragment**: `https://app/s/{id}#k={base64url-key}`. Browsers **never transmit the
   fragment** to the server, so the edge cannot obtain the key.
-- Every `Envelope` is sealed with **AES-256-GCM** (12-byte random nonce, `seq` mixed into
-  AAD to bind order). The DataChannel/fan-out socket carries only `ver ‖ nonce ‖
-  ciphertext‖tag`. Result: **direct P2P, TURN, and DO fan-out are all E2EE** — the edge
-  relays bytes it provably cannot read. DTLS/SCTP adds a second transport layer on the
-  P2P/TURN paths.
+- Every `Envelope` is sealed with **AES-256-GCM** using a **deterministic nonce**
+  (4-byte per-session salt ‖ 64-bit frame counter) and **AAD = `ver ‖ sessionId`**. The
+  DataChannel/fan-out socket carries only `ver ‖ nonce ‖ ciphertext‖tag`. Result:
+  **direct P2P, TURN, and DO fan-out are all E2EE** — the edge relays bytes it provably
+  cannot read. DTLS/SCTP adds a second transport layer on the P2P/TURN paths.
+  Rationale for the counter-based nonce and the sliding replay window is in
+  [01 §1.2](./01-protocol-and-payload-schemas.md#12-the-on-wire-frame-post-encryption);
+  implementation in [`packages/protocol/src/crypto.ts`](../../packages/protocol/src/crypto.ts).
 
 ### 7.3 Optional password protection
 - If the owner sets a link password, the session key is **wrapped**: derive
@@ -164,6 +167,7 @@ flowchart LR
 | Edge/relay reads telemetry | App-layer AES-GCM; key only in link fragment |
 | Link leaks | Short TTL, optional Argon2id password, revocation API |
 | Guessing session ids | UUIDv4 + 256-bit token required |
-| Replay / reorder | GCM nonce + `seq` in AAD; viewer drops stale `seq` |
+| Replay / reorder | Counter-based GCM nonce + 64-frame sliding window; duplicates and out-of-window frames rejected pre-decryption |
+| Cross-session splicing | `sessionId` bound into the GCM AAD |
 | Scraping / DoS | Rate limits, viewer cap, `noindex`, bot heuristics |
 | Malicious webhook | HMAC-SHA256 (`X-HMAC-SHA256-Signature`) verify before processing |

@@ -94,16 +94,19 @@ export interface SessionHello {
   sampleHz: number;
 }
 
-/** A single planned-route vertex, reconstructed from the delta arrays. */
+/**
+ * A single planned-route vertex, reconstructed from the delta arrays.
+ *
+ * This is the RAW decoded geometry. Cumulative distance/ascent profiles are not
+ * transmitted — the receiver derives them by passing these points through
+ * `prepareRoute()` in `@livetrack/geo`, which yields a `PreparedRoute`. Keeping
+ * them out of the wire format saves bandwidth and guarantees the emitter and
+ * every viewer compute the profile with identical code.
+ */
 export interface RouteVertex {
   lat: number;
   lon: number;
   eleM: number;
-  /** cumulative distance from start, meters (filled by geo preprocessing) */
-  cumDistM: number;
-  /** cumulative ascent from start, meters */
-  cumAscentM: number;
-  cumDescentM: number;
 }
 
 export interface RouteMeta {

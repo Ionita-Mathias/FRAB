@@ -8,13 +8,25 @@ evolve safely for years. Decision matrix:
 
 | Criterion | JSON | **Protobuf (proto3)** | CBOR | MessagePack |
 |---|---|---|---|---|
-| Wire size (typical frame) | ~320 B | **~48–70 B** | ~90–120 B (int keys) | ~95–125 B |
+| Wire size (typical frame) | 394 B † | **83 B †** | ~110–140 B (int keys) | ~115–145 B |
 | Cross-language codegen | n/a | **ts-proto / swift-protobuf / wire** | hand-mapped | hand-mapped |
 | Schema evolution | ad-hoc | **field numbers (robust)** | manual | manual |
 | Self-describing | ✓ | ✗ (needs schema) | ✓ | ✓ |
 | Browser decoder weight | 0 | ~13 KB (ts-proto runtime) | ~4 KB | ~5 KB |
 | Deterministic bytes | ✗ | ✓ | ✓ | ✓ |
 | Debuggability | ★★★ | ★ (binary) | ★★ | ★★ |
+
+† Measured, not estimated — `packages/protocol/test/codec.test.ts` asserts these as regression
+guards. Actual encoded sizes for the reference fixtures:
+
+| Frame | Protobuf | Sealed (+29 B framing) | At 1 Hz |
+|---|---|---|---|
+| Minimal (position + HR) | **48 B** | 77 B | ~271 KB/h |
+| Typical (+ cadence, power, pace) | **83 B** | 112 B | ~394 KB/h |
+| Full (+ route progress) | **~129 B** | ~158 B | ~555 KB/h |
+
+The same typical payload as JSON is 394 B, so protobuf is **~4.7× smaller**. CBOR/MessagePack
+figures are estimates (they carry the same scaled integers but pay per-field key overhead).
 
 **Verdict: Protocol Buffers.** The single `.proto` guaranteeing byte-for-byte
 consistency across three languages is decisive for a small team, and it produces the
@@ -38,10 +50,25 @@ Frames are **application-layer encrypted** so the same bytes work over direct P2
 the DO fan-out relay (see [04 §Security](./04-project-structure-and-roadmap.md#7-security-model)):
 
 ```
-┌────────┬───────────────┬───────────────────────────────┐
-│ ver(1) │ GCM nonce(12) │ AES-256-GCM( protobuf Envelope ) + tag(16) │
-└────────┴───────────────┴───────────────────────────────┘
+┌────────┬────────────────────────────┬──────────────────────────────────────┐
+│ ver(1) │ nonce(12) = salt(4)‖ctr(8) │ AES-256-GCM( protobuf Envelope ) +tag(16) │
+└────────┴────────────────────────────┴──────────────────────────────────────┘
 ```
+
+**The nonce is deterministic, not random** — a 4-byte per-session random salt concatenated
+with a 64-bit big-endian frame counter. This was chosen over a random 96-bit nonce because:
+
+1. Nonce reuse becomes *structurally* impossible within a session (a random nonce carries a
+   birthday risk across a multi-hour 1 Hz stream, and GCM fails catastrophically on reuse).
+2. The receiver reads the counter straight off the wire and can reject replays and duplicates
+   **before** spending any crypto work.
+
+**AAD = `ver ‖ sessionId`** (16 raw UUID bytes), binding every frame to its protocol version
+and session so ciphertext cannot be spliced from one session into another. Ordering/replay is
+enforced by the counter via a 64-frame sliding window (`FrameOpener`), which tolerates the
+out-of-order delivery that is normal on an unordered DataChannel.
+
+Reference implementation: [`packages/protocol/src/crypto.ts`](../../packages/protocol/src/crypto.ts).
 
 ### 1.3 CBOR fallback map (integer keys)
 When schemaless CBOR is used, `TelemetryFrame` maps to a CBOR map with integer keys
