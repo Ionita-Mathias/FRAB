@@ -100,7 +100,10 @@ class TransferRegistry(private val historyLimit: Int = 20) {
 
     /** Drops history and cumulative counters. In-flight transfers are left alone. */
     fun reset() {
-        synchronized(historyLock) { finishedHistory.clear() }
+        synchronized(historyLock) {
+            finishedHistory.clear()
+            _recent.value = emptyList()
+        }
         cumulativeUploaded.set(0)
         cumulativeDownloaded.set(0)
         publish()

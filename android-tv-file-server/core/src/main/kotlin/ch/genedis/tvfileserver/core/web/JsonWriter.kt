@@ -150,8 +150,12 @@ class JsonWriter(private val sb: StringBuilder = StringBuilder(256)) {
                     ch == '\t' -> builder.append("\\t")
                     ch == '\b' -> builder.append("\\b")
                     ch == '\u000C' -> builder.append("\\f")
-                    // U+2028 / U+2029 are valid JSON but break JavaScript string literals.
-                    ch.code < 0x20 || ch == '\u2028' || ch == '\u2029' -> {
+                    // File names are attacker-supplied. Escaping the HTML-significant
+                    // characters keeps the payload valid JSON while making it inert even if
+                    // it is ever inlined into a page instead of being fetched as JSON.
+                    // U+2028 / U+2029 are valid JSON but terminate JavaScript string literals.
+                    ch.code < 0x20 || ch == '<' || ch == '>' || ch == '&' ||
+                        ch == '\u2028' || ch == '\u2029' -> {
                         builder.append("\\u")
                         builder.append(HEX[(ch.code shr 12) and 0xF])
                         builder.append(HEX[(ch.code shr 8) and 0xF])
