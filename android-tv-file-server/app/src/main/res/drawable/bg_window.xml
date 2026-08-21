@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A quiet vertical gradient. Flat colour looks washed out on a large TV panel. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:angle="270"
+        android:endColor="@color/background_end"
+        android:startColor="@color/background"
+        android:type="linear" />
+</shape>

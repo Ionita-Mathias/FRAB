@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="background">#FF0B1016</color>
+    <color name="background_end">#FF131C27</color>
+    <color name="surface">#FF18222E</color>
+    <color name="surface_focused">#FF22303F</color>
+    <color name="outline">#FF2C3A4A</color>
+    <color name="accent">#FF3DA9FC</color>
+    <color name="accent_dark">#FF1B6FB8</color>
+    <color name="on_background">#FFEDF2F7</color>
+    <color name="on_background_muted">#FF95A3B4</color>
+    <color name="status_running">#FF2FBF71</color>
+    <color name="status_stopped">#FF6B7A8C</color>
+    <color name="status_pending">#FFE0A030</color>
+    <color name="status_error">#FFE05A5A</color>
+    <color name="qr_background">#FFFFFFFF</color>
+</resources>

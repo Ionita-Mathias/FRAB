@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The single TV screen.
+
+  Deliberately not inside a ScrollView: on a D-Pad device a scrolling container steals focus
+  and makes the button column unreachable. Everything fits a 1080p safe area instead.
+-->
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingStart="@dimen/overscan_horizontal"
+    android:paddingTop="@dimen/overscan_vertical"
+    android:paddingEnd="@dimen/overscan_horizontal"
+    android:paddingBottom="@dimen/overscan_vertical">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_columns"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.34" />
+
+    <!-- ───────────────────────── header ───────────────────────── -->
+
+    <TextView
+        android:id="@+id/txt_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/app_name"
+        android:textColor="@color/on_background"
+        android:textSize="@dimen/text_title"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toStartOf="@id/txt_status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txt_device"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:textColor="@color/on_background_muted"
+        android:textSize="@dimen/text_subtitle"
+        app:layout_constraintEnd_toStartOf="@id/txt_status"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_title"
+        tools:text="Serving from Mi Box 3" />
+
+    <TextView
+        android:id="@+id/txt_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/bg_status_pill"
+        android:backgroundTint="@color/status_stopped"
+        android:paddingStart="18dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="18dp"
+        android:paddingBottom="8dp"
+        android:textColor="@color/on_background"
+        android:textSize="@dimen/text_small"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@id/txt_device"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/txt_title"
+        tools:text="RUNNING" />
+
+    <TextView
+        android:id="@+id/txt_error"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_small"
+        android:textColor="@color/status_error"
+        android:textSize="@dimen/text_small"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_device"
+        tools:text="Port 8080 is already in use."
+        tools:visibility="visible" />
+
+    <!-- ───────────────────────── left column: controls ───────────────────────── -->
+
+    <LinearLayout
+        android:id="@+id/column_actions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_large"
+        android:layout_marginEnd="@dimen/gap_large"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toStartOf="@id/guideline_columns"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/txt_error">
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_toggle"
+            style="@style/Widget.TvFileServer.Button"
+            android:layout_width="match_parent"
+            android:layout_height="72dp"
+            android:drawableStart="@drawable/ic_server"
+            android:drawablePadding="14dp"
+            android:nextFocusDown="@+id/btn_settings"
+            android:nextFocusRight="@+id/btn_toggle"
+            android:nextFocusUp="@+id/btn_toggle"
+            android:text="@string/action_start"
+            android:textStyle="bold" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_settings"
+            style="@style/Widget.TvFileServer.Button"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/gap_small"
+            android:nextFocusDown="@+id/btn_new_password"
+            android:nextFocusUp="@+id/btn_toggle"
+            android:text="@string/action_settings" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_new_password"
+            style="@style/Widget.TvFileServer.Button"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/gap_small"
+            android:nextFocusDown="@+id/btn_permissions"
+            android:nextFocusUp="@+id/btn_settings"
+            android:text="@string/action_new_password" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_permissions"
+            style="@style/Widget.TvFileServer.Button"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/gap_small"
+            android:nextFocusDown="@+id/btn_refresh"
+            android:nextFocusUp="@+id/btn_new_password"
+            android:text="@string/action_grant_storage"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/btn_refresh"
+            style="@style/Widget.TvFileServer.Button"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/gap_small"
+            android:nextFocusDown="@+id/btn_refresh"
+            android:nextFocusUp="@+id/btn_new_password"
+            android:text="@string/action_refresh" />
+    </LinearLayout>
+
+    <!-- ───────────────────────── right column: connection ───────────────────────── -->
+
+    <LinearLayout
+        android:id="@+id/card_connection"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_large"
+        android:background="@drawable/bg_card"
+        android:orientation="horizontal"
+        android:padding="@dimen/card_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline_columns"
+        app:layout_constraintTop_toBottomOf="@id/txt_error">
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/header_connection"
+                android:textColor="@color/accent"
+                android:textSize="@dimen/text_small"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_web_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:textColor="@color/on_background"
+                android:textSize="@dimen/text_body"
+                tools:text="Browser  http://192.168.1.50:8080" />
+
+            <TextView
+                android:id="@+id/txt_dav_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/on_background"
+                android:textSize="@dimen/text_body"
+                tools:text="WebDAV  http://192.168.1.50:8080/dav" />
+
+            <TextView
+                android:id="@+id/txt_ftp_url"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:textColor="@color/on_background"
+                android:textSize="@dimen/text_body"
+                tools:text="FTP  ftp://192.168.1.50:2121" />
+
+            <TextView
+                android:id="@+id/txt_credentials"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:textColor="@color/accent"
+                android:textSize="@dimen/text_body"
+                android:textStyle="bold"
+                tools:text="User  tv  ·  Password  k7m2pq4x" />
+
+            <TextView
+                android:id="@+id/txt_hint"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/gap_medium"
+                android:textColor="@color/on_background_muted"
+                android:textSize="@dimen/text_small"
+                tools:text="Scan the code with a phone…" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/img_qr"
+            android:layout_width="@dimen/qr_size"
+            android:layout_height="@dimen/qr_size"
+            android:layout_marginStart="@dimen/gap_large"
+            android:background="@drawable/bg_qr"
+            android:contentDescription="@string/qr_content_description"
+            android:padding="6dp"
+            android:scaleType="fitCenter"
+            android:visibility="invisible"
+            tools:src="@drawable/ic_server"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+    <!-- ───────────────────────── right column: transfers ───────────────────────── -->
+
+    <LinearLayout
+        android:id="@+id/card_transfers"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/gap_medium"
+        android:background="@drawable/bg_card"
+        android:orientation="vertical"
+        android:padding="@dimen/card_padding"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline_columns"
+        app:layout_constraintTop_toBottomOf="@id/card_connection">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/header_transfers"
+            android:textColor="@color/accent"
+            android:textSize="@dimen/text_small"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_transfers_empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_small"
+            android:textColor="@color/on_background_muted"
+            android:textSize="@dimen/text_small"
+            tools:text="No transfer in progress." />
+
+        <!-- Not focusable: the D-Pad must never fall into a list that mutates mid-transfer. -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_transfers"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/gap_small"
+            android:descendantFocusability="blocksDescendants"
+            android:focusable="false"
+            android:maxHeight="@dimen/transfers_max_height"
+            android:visibility="gone"
+            tools:listitem="@layout/item_transfer"
+            tools:visibility="visible" />
+    </LinearLayout>
+
+    <!-- ───────────────────────── right column: storage ───────────────────────── -->
+
+    <LinearLayout
+        android:id="@+id/card_storage"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/gap_medium"
+        android:background="@drawable/bg_card"
+        android:orientation="vertical"
+        android:padding="@dimen/card_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="@id/guideline_columns"
+        app:layout_constraintTop_toBottomOf="@id/card_transfers"
+        app:layout_constraintVertical_bias="0">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/header_storage"
+            android:textColor="@color/accent"
+            android:textSize="@dimen/text_small"
+            android:textStyle="bold" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/list_roots"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="@dimen/gap_small"
+            android:layout_weight="1"
+            android:descendantFocusability="blocksDescendants"
+            android:focusable="false"
+            tools:listitem="@layout/item_root" />
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

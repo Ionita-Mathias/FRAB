@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Serveur de fichiers TV</string>
+
+    <string name="subtitle_device">Partage depuis %1$s</string>
+    <string name="status_running">ACTIF</string>
+    <string name="status_stopped">ARRÊTÉ</string>
+    <string name="status_starting">DÉMARRAGE…</string>
+    <string name="status_stopping">ARRÊT…</string>
+    <string name="status_error">ERREUR</string>
+
+    <string name="action_start">Démarrer le serveur</string>
+    <string name="action_stop">Arrêter le serveur</string>
+    <string name="action_settings">Paramètres</string>
+    <string name="action_new_password">Nouveau mot de passe</string>
+    <string name="action_refresh">Actualiser</string>
+    <string name="action_grant_storage">Autoriser l\'accès au stockage</string>
+    <string name="action_close">Fermer</string>
+
+    <string name="header_connection">Se connecter à ce serveur</string>
+    <string name="label_web_url">Navigateur  %1$s</string>
+    <string name="label_dav_url">WebDAV  %1$s</string>
+    <string name="label_ftp_url">FTP  %1$s</string>
+    <string name="label_credentials">Utilisateur  %1$s  ·  Mot de passe  %2$s</string>
+    <string name="label_no_auth">Aucun mot de passe (ouvert à tout le réseau local)</string>
+    <string name="value_unavailable">indisponible</string>
+    <string name="qr_content_description">QR code vers l\'interface web</string>
+
+    <string name="hint_running">Scannez le code avec un téléphone, ou ouvrez l\'adresse dans un navigateur. Sur Mac, utilisez Aller ▸ Se connecter au serveur avec l\'adresse WebDAV.</string>
+    <string name="hint_stopped">Démarrez le serveur pour partager le stockage de cet appareil sur le réseau local.</string>
+    <string name="hint_read_only">Mode lecture seule : les clients peuvent consulter et télécharger, mais rien modifier.</string>
+
+    <string name="header_transfers">Transferts</string>
+    <string name="transfers_idle">Aucun transfert en cours.</string>
+    <string name="transfers_offline">Le serveur n\'est pas actif.</string>
+    <string name="transfer_detail">%1$s · %2$s · %3$s · %4$s restant</string>
+
+    <string name="header_storage">Stockage partagé</string>
+    <string name="root_detail">%1$s · %2$s libres sur %3$s</string>
+    <string name="root_detail_read_only">%1$s · %2$s libres sur %3$s · lecture seule</string>
+
+    <string name="error_http_port_busy">Le port %1$d est déjà utilisé. Choisissez-en un autre dans les paramètres.</string>
+    <string name="error_ftp_port_busy">FTP n\'a pas pu démarrer : le port %1$d est déjà utilisé. L\'interface web fonctionne normalement.</string>
+
+    <string name="permission_dialog_title">Accès au stockage requis</string>
+    <string name="permission_dialog_message">Cet appareil ne propose pas l\'écran d\'accès à tous les fichiers. Ouvrez Paramètres ▸ Applications ▸ Serveur de fichiers TV ▸ Autorisations et activez l\'accès au stockage, puis revenez et appuyez sur Actualiser.\n\nSans cela, le serveur peut tout de même partager son propre dossier.</string>
+
+    <string name="notification_channel_name">Serveur de fichiers</string>
+    <string name="notification_channel_description">Affiche l\'adresse du serveur pendant son fonctionnement.</string>
+    <string name="notification_title_running">Serveur de fichiers actif</string>
+    <string name="notification_title_starting">Démarrage du serveur…</string>
+    <string name="notification_title_stopped">Serveur de fichiers arrêté</string>
+    <string name="notification_text_idle">En attente d\'une adresse réseau</string>
+    <string name="notification_action_stop">Arrêter</string>
+    <string name="notification_credentials">Utilisateur %1$s · Mot de passe %2$s</string>
+    <plurals name="notification_text_transfers">
+        <item quantity="one">%1$d transfert · %2$s</item>
+        <item quantity="other">%1$d transferts · %2$s</item>
+    </plurals>
+
+    <string name="settings_title">Paramètres du serveur</string>
+    <string name="settings_description">Les changements sont appliqués immédiatement. Modifier un port redémarre le serveur.</string>
+    <string name="settings_http_port">Port web et WebDAV</string>
+    <string name="settings_http_port_desc">8080 par défaut</string>
+    <string name="settings_ftp_port">Port FTP</string>
+    <string name="settings_ftp_port_desc">2121 par défaut</string>
+    <string name="settings_ftp_enabled">Activer le FTP</string>
+    <string name="settings_ftp_enabled_desc">Pour Kodi, VLC, FileZilla et clients similaires</string>
+    <string name="settings_webdav_enabled">Activer le WebDAV</string>
+    <string name="settings_webdav_enabled_desc">Permet à Finder (macOS) et à l\'Explorateur Windows de monter cet appareil</string>
+    <string name="settings_auth_enabled">Exiger un mot de passe</string>
+    <string name="settings_auth_enabled_desc">À désactiver uniquement sur un réseau de confiance</string>
+    <string name="settings_anonymous_read">Lecture anonyme</string>
+    <string name="settings_anonymous_read_desc">Consultation et téléchargement sans mot de passe ; l\'écriture en exige toujours un</string>
+    <string name="settings_read_only">Mode lecture seule</string>
+    <string name="settings_read_only_desc">Refuser tout envoi, renommage et suppression</string>
+    <string name="settings_hide_dot_files">Masquer les fichiers cachés</string>
+    <string name="settings_hide_dot_files_desc">Omettre les noms commençant par un point</string>
+    <string name="settings_start_on_boot">Démarrer au démarrage de la TV</string>
+    <string name="settings_start_on_boot_desc">Le serveur revient automatiquement après un redémarrage</string>
+    <string name="settings_auto_start">Démarrer à l\'ouverture de l\'application</string>
+    <string name="settings_auto_start_desc">Évite d\'appuyer sur Démarrer à chaque fois</string>
+    <string name="settings_expose_app_dirs">Partager aussi le dossier de l\'application</string>
+    <string name="settings_expose_app_dirs_desc">Un dossier accessible même sans autorisation de stockage</string>
+    <string name="settings_apply">Appliquer</string>
+    <string name="settings_apply_desc">Enregistrer et revenir</string>
+</resources>

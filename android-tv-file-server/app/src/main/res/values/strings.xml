@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TV File Server</string>
+
+    <!-- Header -->
+    <string name="subtitle_device">Serving from %1$s</string>
+    <string name="status_running">RUNNING</string>
+    <string name="status_stopped">STOPPED</string>
+    <string name="status_starting">STARTING…</string>
+    <string name="status_stopping">STOPPING…</string>
+    <string name="status_error">ERROR</string>
+
+    <!-- Actions -->
+    <string name="action_start">Start server</string>
+    <string name="action_stop">Stop server</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_new_password">New password</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_grant_storage">Grant storage access</string>
+    <string name="action_close">Close</string>
+
+    <!-- Connection card -->
+    <string name="header_connection">Connect to this server</string>
+    <string name="label_web_url">Browser  %1$s</string>
+    <string name="label_dav_url">WebDAV  %1$s</string>
+    <string name="label_ftp_url">FTP  %1$s</string>
+    <string name="label_credentials">User  %1$s  ·  Password  %2$s</string>
+    <string name="label_no_auth">No password required (open to everyone on this network)</string>
+    <string name="value_unavailable">not available</string>
+    <string name="qr_content_description">QR code linking to the web interface</string>
+
+    <string name="hint_running">Scan the code with a phone, or open the address in any browser. On a Mac use Go ▸ Connect to Server with the WebDAV address.</string>
+    <string name="hint_stopped">Start the server to share this device\'s storage over the local network.</string>
+    <string name="hint_read_only">Read-only mode is on: clients can browse and download, but not change anything.</string>
+
+    <!-- Transfers -->
+    <string name="header_transfers">Transfers</string>
+    <string name="transfers_idle">No transfer in progress.</string>
+    <string name="transfers_offline">The server is not running.</string>
+    <string name="transfer_detail">%1$s · %2$s · %3$s · %4$s left</string>
+
+    <!-- Storage -->
+    <string name="header_storage">Shared storage</string>
+    <string name="root_detail">%1$s · %2$s free of %3$s</string>
+    <string name="root_detail_read_only">%1$s · %2$s free of %3$s · read-only</string>
+
+    <!-- Errors -->
+    <string name="error_http_port_busy">Port %1$d is already in use. Choose another one in Settings.</string>
+    <string name="error_ftp_port_busy">FTP could not start: port %1$d is already in use. The web interface is unaffected.</string>
+
+    <!-- Permission dialog -->
+    <string name="permission_dialog_title">Storage access needed</string>
+    <string name="permission_dialog_message">This device does not offer the all-files access screen. Open Settings ▸ Apps ▸ TV File Server ▸ Permissions and allow storage access, then come back and press Refresh.\n\nWithout it the server can still share its own app folder.</string>
+
+    <!-- Notification -->
+    <string name="notification_channel_name">File server</string>
+    <string name="notification_channel_description">Shows the file server address while it is running.</string>
+    <string name="notification_title_running">File server running</string>
+    <string name="notification_title_starting">Starting the file server…</string>
+    <string name="notification_title_stopped">File server stopped</string>
+    <string name="notification_text_idle">Waiting for a network address</string>
+    <string name="notification_action_stop">Stop</string>
+    <string name="notification_credentials">User %1$s · Password %2$s</string>
+    <plurals name="notification_text_transfers">
+        <item quantity="one">%1$d transfer · %2$s</item>
+        <item quantity="other">%1$d transfers · %2$s</item>
+    </plurals>
+
+    <!-- Settings -->
+    <string name="settings_title">Server settings</string>
+    <string name="settings_description">Changes apply immediately. Changing a port restarts the server.</string>
+    <string name="settings_http_port">Web and WebDAV port</string>
+    <string name="settings_http_port_desc">Default 8080</string>
+    <string name="settings_ftp_port">FTP port</string>
+    <string name="settings_ftp_port_desc">Default 2121</string>
+    <string name="settings_ftp_enabled">Enable FTP</string>
+    <string name="settings_ftp_enabled_desc">For Kodi, VLC, FileZilla and similar clients</string>
+    <string name="settings_webdav_enabled">Enable WebDAV</string>
+    <string name="settings_webdav_enabled_desc">Lets macOS Finder and Windows Explorer mount this device</string>
+    <string name="settings_auth_enabled">Require a password</string>
+    <string name="settings_auth_enabled_desc">Turn off only on a network you fully trust</string>
+    <string name="settings_anonymous_read">Allow anonymous read</string>
+    <string name="settings_anonymous_read_desc">Browsing and downloading without a password; writing still needs one</string>
+    <string name="settings_read_only">Read-only mode</string>
+    <string name="settings_read_only_desc">Refuse every upload, rename and delete</string>
+    <string name="settings_hide_dot_files">Hide dot files</string>
+    <string name="settings_hide_dot_files_desc">Omit names starting with a dot from listings</string>
+    <string name="settings_start_on_boot">Start when the TV boots</string>
+    <string name="settings_start_on_boot_desc">The server comes back automatically after a restart</string>
+    <string name="settings_auto_start">Start when the app opens</string>
+    <string name="settings_auto_start_desc">Skip pressing Start every time</string>
+    <string name="settings_expose_app_dirs">Share the app folder too</string>
+    <string name="settings_expose_app_dirs_desc">A folder that works even without storage permission</string>
+    <string name="settings_apply">Apply</string>
+    <string name="settings_apply_desc">Save and return</string>
+</resources>

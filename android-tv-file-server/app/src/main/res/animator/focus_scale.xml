@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A small lift on focus. TV guidelines ask for a visible scale change, and 1.06 is enough
+     to read at three metres without pushing neighbouring rows around. -->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:state_focused="true">
+        <set>
+            <objectAnimator
+                android:duration="150"
+                android:propertyName="scaleX"
+                android:valueTo="1.06"
+                android:valueType="floatType" />
+            <objectAnimator
+                android:duration="150"
+                android:propertyName="scaleY"
+                android:valueTo="1.06"
+                android:valueType="floatType" />
+        </set>
+    </item>
+    <item>
+        <set>
+            <objectAnimator
+                android:duration="150"
+                android:propertyName="scaleX"
+                android:valueTo="1.0"
+                android:valueType="floatType" />
+            <objectAnimator
+                android:duration="150"
+                android:propertyName="scaleY"
+                android:valueTo="1.0"
+                android:valueType="floatType" />
+        </set>
+    </item>
+</selector>

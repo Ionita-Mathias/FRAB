@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0b1016">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="TV Files">
+<title>TV File Server</title>
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/styles.css">
+<!--
+  Tailwind is a progressive enhancement only. A TV's LAN often has no internet at all, so
+  every element also carries a semantic class that styles.css handles on its own; if this
+  script never loads, the page looks exactly the same.
+-->
+<script src="https://cdn.tailwindcss.com" defer></script>
+<script src="/assets/app.js" defer></script>
+</head>
+<body>
+
+<!-- ─────────────────────────── login ─────────────────────────── -->
+<section id="login-view" class="login-view" hidden>
+  <form id="login-form" class="login-card" autocomplete="on">
+    <h1 class="login-title">TV File Server</h1>
+    <p class="login-subtitle" id="login-device">Sign in to browse this device</p>
+    <label class="field">
+      <span class="field-label">User name</span>
+      <input id="login-username" class="field-input" type="text" name="username"
+             autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" value="tv" required>
+    </label>
+    <label class="field">
+      <span class="field-label">Password</span>
+      <input id="login-password" class="field-input" type="password" name="password"
+             autocomplete="current-password" required>
+    </label>
+    <p id="login-error" class="login-error" hidden></p>
+    <button id="login-submit" class="btn btn-primary btn-block" type="submit">Sign in</button>
+    <p class="login-hint">The password is shown on the television screen.</p>
+  </form>
+</section>
+
+<!-- ─────────────────────────── app ─────────────────────────── -->
+<div id="app-view" class="app" hidden>
+
+  <header class="topbar">
+    <div class="topbar-identity">
+      <svg class="topbar-logo" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M4 3h16a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1zM4 14h16a1 1 0 0 1 1 1v5a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1v-5a1 1 0 0 1 1-1z"/>
+      </svg>
+      <div>
+        <div class="topbar-title" id="server-name">TV File Server</div>
+        <div class="topbar-sub" id="server-sub">Connecting…</div>
+      </div>
+    </div>
+    <div class="topbar-actions">
+      <span class="badge" id="badge-readonly" hidden>Read-only</span>
+      <span class="badge badge-quiet" id="badge-space"></span>
+      <button class="btn btn-ghost" id="btn-logout" type="button">Sign out</button>
+    </div>
+  </header>
+
+  <nav class="rootbar" id="rootbar" aria-label="Storage areas"></nav>
+
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <button class="btn btn-primary" id="btn-upload" type="button">Upload files</button>
+      <button class="btn" id="btn-upload-folder" type="button">Upload folder</button>
+      <button class="btn" id="btn-mkdir" type="button">New folder</button>
+    </div>
+    <div class="toolbar-group" id="selection-actions" hidden>
+      <span class="selection-count" id="selection-count"></span>
+      <button class="btn" id="btn-download" type="button">Download</button>
+      <button class="btn" id="btn-rename" type="button">Rename</button>
+      <button class="btn" id="btn-cut" type="button">Cut</button>
+      <button class="btn" id="btn-copy" type="button">Copy</button>
+      <button class="btn btn-danger" id="btn-delete" type="button">Delete</button>
+    </div>
+    <div class="toolbar-group toolbar-right">
+      <button class="btn" id="btn-paste" type="button" hidden>Paste</button>
+      <button class="btn btn-ghost" id="btn-refresh" type="button" title="Refresh">Refresh</button>
+    </div>
+  </div>
+
+  <nav class="breadcrumb" id="breadcrumb" aria-label="Breadcrumb"></nav>
+
+  <main class="content">
+    <div class="table-wrap">
+      <table class="filetable">
+        <thead>
+          <tr>
+            <th class="col-check"><input type="checkbox" id="check-all" aria-label="Select everything"></th>
+            <th class="col-name sortable" data-sort="name">Name</th>
+            <th class="col-size sortable" data-sort="size">Size</th>
+            <th class="col-date sortable" data-sort="modified">Modified</th>
+          </tr>
+        </thead>
+        <tbody id="filelist"></tbody>
+      </table>
+      <p class="empty" id="empty-message" hidden>This folder is empty.</p>
+      <div class="spinner" id="loading" hidden><span></span></div>
+    </div>
+
+    <aside class="sidebar">
+      <section class="panel">
+        <h2 class="panel-title">Uploads</h2>
+        <div id="upload-list" class="upload-list"></div>
+        <p class="panel-empty" id="upload-empty">Drop files anywhere on this page.</p>
+        <div class="upload-total" id="upload-total" hidden>
+          <div class="progress"><div class="progress-bar" id="upload-total-bar"></div></div>
+          <div class="upload-total-text" id="upload-total-text"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <h2 class="panel-title">Activity</h2>
+        <div id="activity-list" class="activity-list"></div>
+        <p class="panel-empty" id="activity-empty">No transfer in progress.</p>
+      </section>
+    </aside>
+  </main>
+</div>
+
+<!-- ─────────────────────────── overlays ─────────────────────────── -->
+<div id="drop-overlay" class="drop-overlay" hidden>
+  <div class="drop-inner">
+    <div class="drop-icon">⇪</div>
+    <div class="drop-text">Drop to upload here</div>
+    <div class="drop-path" id="drop-path"></div>
+  </div>
+</div>
+
+<div id="modal" class="modal" hidden>
+  <div class="modal-card" role="dialog" aria-modal="true">
+    <h2 class="modal-title" id="modal-title"></h2>
+    <p class="modal-message" id="modal-message"></p>
+    <input class="field-input" id="modal-input" type="text" hidden>
+    <div class="modal-actions">
+      <button class="btn" id="modal-cancel" type="button">Cancel</button>
+      <button class="btn btn-primary" id="modal-confirm" type="button">OK</button>
+    </div>
+  </div>
+</div>
+
+<div id="preview" class="preview" hidden>
+  <div class="preview-head">
+    <span id="preview-name" class="preview-name"></span>
+    <div>
+      <a class="btn" id="preview-download" href="#" download>Download</a>
+      <button class="btn btn-ghost" id="preview-close" type="button">Close</button>
+    </div>
+  </div>
+  <div class="preview-body" id="preview-body"></div>
+</div>
+
+<div id="toasts" class="toasts" aria-live="polite"></div>
+
+<input id="file-input" type="file" multiple hidden>
+<input id="folder-input" type="file" multiple webkitdirectory directory hidden>
+
+</body>
+</html>
