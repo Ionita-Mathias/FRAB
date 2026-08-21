@@ -7,7 +7,6 @@ import ch.genedis.tvfileserver.core.vfs.VPath
 import ch.genedis.tvfileserver.core.vfs.VfsEntry
 import ch.genedis.tvfileserver.core.vfs.VfsException
 import ch.genedis.tvfileserver.core.vfs.VirtualFileSystem
-import java.io.IOException
 import java.io.OutputStream
 import java.util.zip.CRC32
 import java.util.zip.Deflater
@@ -58,12 +57,8 @@ class ZipStreamer(
 
     private fun addDirectory(zip: ZipOutputStream, path: VPath, name: String, buffer: ByteArray) {
         val directoryEntry = ZipEntry("$name/").apply { time = safeTime(path) }
-        try {
-            zip.putNextEntry(directoryEntry)
-            zip.closeEntry()
-        } catch (error: IOException) {
-            throw error
-        }
+        zip.putNextEntry(directoryEntry)
+        zip.closeEntry()
         val children = try {
             vfs.list(path)
         } catch (error: VfsException) {

@@ -31,6 +31,7 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.util.Locale
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * The HTTP API and static file server behind the browser UI.
@@ -48,6 +49,8 @@ class WebInterfaceHandler(
 ) {
 
     private val router: Router by lazy { buildRouter() }
+
+    private val openEventStreams = AtomicInteger(0)
 
     fun asHandler(): HttpHandler = router.asHandler()
 
@@ -207,7 +210,9 @@ class WebInterfaceHandler(
         if (!assets.exists(name)) return HttpResponse.error(HttpStatus.NOT_FOUND, "No such asset")
 
         val size = assets.size(name)
-        val etag = "\"a-${name.hashCode().toLong() and 0xFFFFFFFFL}-$size\""
+        // The app version is part of the tag: a compressed asset reports size -1, so without
+        // it a cached copy of the web UI would survive an app update.
+        val etag = "\"a-${name.hashCode().toLong() and 0xFFFFFFFFL}-$size-${configProvider().appVersion}\""
         if (request.header(HttpHeaderNames.IF_NONE_MATCH)?.split(',')?.any { it.trim() == etag } == true) {
             return HttpResponse.status(HttpStatus.NOT_MODIFIED).header(HttpHeaderNames.ETAG, etag)
         }
@@ -678,22 +683,36 @@ class WebInterfaceHandler(
      *
      * Cheaper than the SPA polling, and it lets one browser watch an upload started from
      * Finder or Kodi.
+     *
+     * Each stream holds a connection open for as long as it lives, so the number of
+     * concurrent streams is capped well below the server's connection limit: a handful of
+     * forgotten browser tabs must never be able to starve actual file transfers. Refused
+     * clients fall back to polling, which the web UI already handles.
      */
     private fun events(): HttpResponse {
+        if (openEventStreams.get() >= MAX_EVENT_STREAMS) {
+            return HttpResponse.jsonError(HttpStatus.SERVICE_UNAVAILABLE, "Too many live streams")
+                .header(HttpHeaderNames.RETRY_AFTER, "10")
+        }
         val body = HttpBody.Streaming(null) { out ->
-            val deadline = System.currentTimeMillis() + SSE_MAX_DURATION_MS
-            out.write("retry: 3000\n\n".toByteArray(Charsets.UTF_8))
-            out.flush()
-            while (System.currentTimeMillis() < deadline) {
-                val frame = "data: ${transfersJson()}\n\n"
-                out.write(frame.toByteArray(Charsets.UTF_8))
+            openEventStreams.incrementAndGet()
+            try {
+                val deadline = System.currentTimeMillis() + SSE_MAX_DURATION_MS
+                out.write("retry: 3000\n\n".toByteArray(Charsets.UTF_8))
                 out.flush()
-                try {
-                    Thread.sleep(SSE_INTERVAL_MS)
-                } catch (error: InterruptedException) {
-                    Thread.currentThread().interrupt()
-                    return@Streaming
+                while (System.currentTimeMillis() < deadline) {
+                    val frame = "data: ${transfersJson()}\n\n"
+                    out.write(frame.toByteArray(Charsets.UTF_8))
+                    out.flush()
+                    try {
+                        Thread.sleep(SSE_INTERVAL_MS)
+                    } catch (error: InterruptedException) {
+                        Thread.currentThread().interrupt()
+                        return@Streaming
+                    }
                 }
+            } finally {
+                openEventStreams.decrementAndGet()
             }
         }
         return HttpResponse(HttpStatus.OK, body = body, closeConnection = true)
@@ -797,6 +816,7 @@ class WebInterfaceHandler(
         const val CSRF_TOKEN = "TvFileServer"
         const val X_FILE_SIZE = "X-File-Size"
         const val SSE_INTERVAL_MS = 1000L
+        const val MAX_EVENT_STREAMS = 4
         const val SSE_MAX_DURATION_MS = 30 * 60_000L
 
         fun etagOf(entry: VfsEntry): String =

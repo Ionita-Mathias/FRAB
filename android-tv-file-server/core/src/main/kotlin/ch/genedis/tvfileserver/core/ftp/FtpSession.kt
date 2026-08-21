@@ -651,6 +651,14 @@ internal class FtpSession(
         }
     }
 
+    /**
+     * Handles `ABOR`.
+     *
+     * A session reads its control channel from one coroutine, so an ABOR sent *during* a
+     * transfer is not seen until that transfer returns. In practice this costs nothing:
+     * every client that aborts also closes the data connection, which fails the copy
+     * immediately and is reported as 426 or 451.
+     */
     private fun abor() {
         aborted = true
         data.abortCurrent()
