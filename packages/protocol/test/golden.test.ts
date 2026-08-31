@@ -11,7 +11,7 @@
  * and assert the same things (P4).
  *
  * Regenerate deliberately (never to paper over a diff):
- *   UPDATE_GOLDEN=1 pnpm --filter @livetrack/protocol test
+ *   UPDATE_GOLDEN=1 pnpm --filter @livetrace/protocol test
  * A vector changing without a protocol version bump is a breaking-change bug.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
@@ -43,7 +43,7 @@ const HELLO: SessionHello = {
   sessionId: SESSION_ID,
   t0EpochMs: T0,
   sport: 'trail_running',
-  emitterAgent: 'livetrack-conformance/1.0.0',
+  emitterAgent: 'livetrace-conformance/1.0.0',
   hasRoute: true,
   sampleHz: 1,
 };

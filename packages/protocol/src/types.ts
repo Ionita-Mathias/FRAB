@@ -1,5 +1,5 @@
 /**
- * LiveTrackSuunto — shared DOMAIN model (decoded, human units).
+ * LiveTrace — shared DOMAIN model (decoded, human units).
  *
  * These interfaces are the ergonomic runtime shape used by the web viewer and
  * (mirrored) by the mobile app. They are DISTINCT from the generated protobuf
@@ -99,7 +99,7 @@ export interface SessionHello {
  *
  * This is the RAW decoded geometry. Cumulative distance/ascent profiles are not
  * transmitted — the receiver derives them by passing these points through
- * `prepareRoute()` in `@livetrack/geo`, which yields a `PreparedRoute`. Keeping
+ * `prepareRoute()` in `@livetrace/geo`, which yields a `PreparedRoute`. Keeping
  * them out of the wire format saves bandwidth and guarantees the emitter and
  * every viewer compute the profile with identical code.
  */

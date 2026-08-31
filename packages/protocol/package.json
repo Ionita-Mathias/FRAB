@@ -1,9 +1,9 @@
 {
-  "name": "@livetrack/protocol",
+  "name": "@livetrace/protocol",
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "Canonical wire schema, codec and E2EE frame sealing for LiveTrackSuunto",
+  "description": "Canonical wire schema, codec and E2EE frame sealing for LiveTrace",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "exports": {

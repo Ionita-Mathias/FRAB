@@ -211,7 +211,7 @@ describe('end-to-end: encode -> seal -> open -> decode', () => {
       sessionId: SID,
       t0EpochMs: T0,
       sport: 'trail_running',
-      emitterAgent: 'livetrack-ios/1.0.0',
+      emitterAgent: 'livetrace-ios/1.0.0',
       hasRoute: false,
       sampleHz: 1,
     }))).then((pt) => dec.decode(pt));

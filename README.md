@@ -1,12 +1,25 @@
-# LiveTrackSuunto
+# LiveTrace
 
-Privacy-first live tracking for Suunto athletes. Telemetry streams **peer-to-peer
-over WebRTC** and is **end-to-end encrypted**, so no third-party server — ours
-included — can read an athlete's position.
+Privacy-first live tracking for endurance athletes. Telemetry streams
+**peer-to-peer over WebRTC** and is **end-to-end encrypted**, so no third-party
+server — ours included — can read an athlete's position.
 
-Built strictly on **official Suunto APIs** (Cloud/Partner API, Webhooks,
-SuuntoPlus SDK) plus official iOS/Android/Bluetooth-SIG platform APIs. No private
+The name comes from the signature view: a **dual trace** on one map, the planned
+GPX route against the track actually being run.
+
+**Device-neutral by construction.** Live position comes from the phone
+(CoreLocation / FusedLocationProvider) and sensors over **standard Bluetooth SIG
+GATT** profiles, so any conformant watch, strap or pod works. **Suunto is the
+reference integration** — routes and post-workout FIT files via the official
+Suunto Cloud/Partner API, and heart rate via Broadcast HR on recent watches.
+
+Built strictly on **official APIs**: Suunto Cloud/Partner API, Webhooks and the
+SuuntoPlus SDK, plus official iOS/Android/Bluetooth-SIG platform APIs. No private
 endpoints, no reverse-engineered protocols, no unsanctioned BLE workarounds.
+
+> Not affiliated with or endorsed by Suunto. "Suunto" and "SuuntoPlus" are
+> trademarks of their respective owner, referenced here only to identify the
+> official APIs and hardware this project interoperates with.
 
 ## How it works
 

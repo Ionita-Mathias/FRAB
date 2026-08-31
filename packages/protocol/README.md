@@ -1,6 +1,6 @@
-# @livetrack/protocol
+# @livetrace/protocol
 
-Canonical wire schema, codec, and end-to-end encryption for LiveTrackSuunto
+Canonical wire schema, codec, and end-to-end encryption for LiveTrace
 telemetry. Shared by the mobile emitter, the web viewer, and the Cloudflare edge.
 
 ## Layout
@@ -17,7 +17,7 @@ telemetry. Shared by the mobile emitter, the web viewer, and the Cloudflare edge
 ## Usage
 
 ```ts
-import { Encoder, Decoder, FrameSealer, FrameOpener, generateSessionKey } from '@livetrack/protocol';
+import { Encoder, Decoder, FrameSealer, FrameOpener, generateSessionKey } from '@livetrace/protocol';
 
 // ── emitter ──
 const key = await generateSessionKey();          // stays on the device; shared via link #fragment
@@ -69,7 +69,7 @@ every language's test suite.
 Regenerate **only** for an intentional protocol change:
 
 ```sh
-UPDATE_GOLDEN=1 pnpm --filter @livetrack/protocol test
+UPDATE_GOLDEN=1 pnpm --filter @livetrace/protocol test
 ```
 
 CI fails if the vectors change without being committed deliberately. A vector

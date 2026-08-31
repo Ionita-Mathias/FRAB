@@ -1,4 +1,4 @@
-// LiveTrackSuunto — canonical wire schema for the WebRTC DataChannel.
+// LiveTrace — canonical wire schema for the WebRTC DataChannel.
 //
 // This .proto is the SINGLE SOURCE OF TRUTH. Language bindings are generated,
 // never hand-written:
@@ -16,7 +16,7 @@
 // so the Durable Object / TURN relay only ever sees ciphertext.
 
 syntax = "proto3";
-package livetrack.v1;
+package livetrace.v1;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Envelope — every decrypted DataChannel frame is exactly one Envelope.
@@ -40,7 +40,7 @@ message SessionHello {
   string session_id    = 1; // UUIDv4 (also carried out-of-band in the link)
   uint64 t0_epoch_ms   = 2; // session start; TelemetryFrame.t_ms is relative to this
   string sport         = 3; // e.g. "trail_running", "cycling", "hiking"
-  string emitter_agent = 4; // "livetrack-ios/1.0.0"
+  string emitter_agent = 4; // "livetrace-ios/1.0.0"
   bool   has_route     = 5;
   uint32 sample_hz     = 6; // nominal emit rate (informational)
 }

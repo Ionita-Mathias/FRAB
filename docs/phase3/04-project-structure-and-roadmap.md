@@ -7,7 +7,7 @@ shared packages); the mobile app is **Kotlin Multiplatform (KMP)** so capture/re
 is shared and only the UI is platform-native (SwiftUI / Jetpack Compose).
 
 ```
-livetracksuunto/
+livetrace/
 ├─ apps/
 │  ├─ web/                      # Next.js 15 viewer PWA
 │  │  ├─ app/                   #   App Router; /s/[sessionId] live page

@@ -1,4 +1,4 @@
-# LiveTrackSuunto — Phase 1 & 2: API Feasibility Audit + High‑Level Architecture
+# LiveTrace — Phase 1 & 2: API Feasibility Audit + High‑Level Architecture
 
 **Document status:** Phases 1 & 2 complete. **Stops here, awaiting validation before Phase 3 (Architecture detail) and Phase 4 (Implementation).**
 **Compliance posture:** 100% official Suunto APIs/SDKs + official iOS/Android/Bluetooth‑SIG platform APIs. **Zero private APIs, zero reverse‑engineering, zero un‑sanctioned BLE hacks.**

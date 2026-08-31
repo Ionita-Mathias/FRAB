@@ -103,7 +103,7 @@ flowchart TB
 
 ```mermaid
 C4Container
-    title Container Diagram — LiveTrackSuunto
+    title Container Diagram — LiveTrace
 
     Person(athlete, "Athlete", "Trains with a Suunto watch + phone")
     Person(viewer, "Viewer", "Follows the live session in a browser")

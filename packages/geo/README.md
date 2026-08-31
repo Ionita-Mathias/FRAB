@@ -1,4 +1,4 @@
-# @livetrack/geo
+# @livetrace/geo
 
 GPX route preprocessing, live-fix snapping, and grade-adjusted dynamic ETA.
 
@@ -15,7 +15,7 @@ Full mathematical specification:
 import {
   prepareRoute, snapToRoute, computeRemaining,
   computeEta, PaceEstimator, OffRouteDetector,
-} from '@livetrack/geo';
+} from '@livetrace/geo';
 
 const route = prepareRoute(gpxPoints);        // once: cumulative distance + elevation profile
 const pace = new PaceEstimator(30);           // EWMA of flat-equivalent speed

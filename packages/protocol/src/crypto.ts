@@ -1,5 +1,5 @@
 /**
- * LiveTrackSuunto — application-layer E2EE for telemetry frames.
+ * LiveTrace — application-layer E2EE for telemetry frames.
  *
  * Every frame is sealed with AES-256-GCM ABOVE the transport, so the identical
  * ciphertext travels over a direct DataChannel, a TURN relay, or the Durable

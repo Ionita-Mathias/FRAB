@@ -208,7 +208,7 @@ describe('control messages', () => {
     sessionId: '3f2504e0-4f89-41d3-9a0c-0305e82c3301',
     t0EpochMs: T0,
     sport: 'trail_running',
-    emitterAgent: 'livetrack-ios/1.0.0',
+    emitterAgent: 'livetrace-ios/1.0.0',
     hasRoute: true,
     sampleHz: 1,
   };

@@ -1,5 +1,5 @@
 /**
- * LiveTrackSuunto — wire <-> domain codec.
+ * LiveTrace — wire <-> domain codec.
  *
  * The wire format (generated from telemetry.proto) uses scaled integers and
  * session-relative timestamps for compactness; the domain model
@@ -13,7 +13,7 @@
  *   cadenceRpm   0  -> null      powerW    0   -> null
  *   paceSPerKm  <=0 -> null      battPct   0   -> null
  */
-import { livetrack } from './gen/telemetry.js';
+import { livetrace } from './gen/telemetry.js';
 import type {
   ChannelMessage,
   LiveMetrics,
@@ -28,8 +28,8 @@ import type {
   TransportMode,
 } from './types.js';
 
-const V1 = livetrack.v1;
-type PbEnvelope = livetrack.v1.Envelope.$Properties;
+const V1 = livetrace.v1;
+type PbEnvelope = livetrace.v1.Envelope.$Properties;
 
 const E7 = 1e7;
 const DM = 10; // decimeters per meter
@@ -139,7 +139,7 @@ function envelope(body: Omit<PbEnvelope, 'v'>): Uint8Array {
   return out;
 }
 
-function encodeTelemetry(m: LiveMetrics, t0: number): livetrack.v1.TelemetryFrame.$Properties {
+function encodeTelemetry(m: LiveMetrics, t0: number): livetrace.v1.TelemetryFrame.$Properties {
   return {
     seq: m.seq,
     tMs: Math.max(0, Math.round(m.timestamp - t0)),
@@ -167,7 +167,7 @@ function encodeTelemetry(m: LiveMetrics, t0: number): livetrack.v1.TelemetryFram
   };
 }
 
-function encodeRouteProgress(r: RouteProgress): livetrack.v1.RouteProgress.$Properties {
+function encodeRouteProgress(r: RouteProgress): livetrace.v1.RouteProgress.$Properties {
   return {
     distDoneM: r.distanceDoneM,
     distRemainingM: r.distanceRemainingM,
@@ -183,7 +183,7 @@ function encodeRouteProgress(r: RouteProgress): livetrack.v1.RouteProgress.$Prop
 }
 
 /** Delta-encodes the planned polyline (the single largest message we send). */
-function encodeRouteMeta(r: RouteMeta): livetrack.v1.RouteMeta.$Properties {
+function encodeRouteMeta(r: RouteMeta): livetrace.v1.RouteMeta.$Properties {
   const pts = r.points;
   const first = pts[0] ?? { lat: 0, lon: 0, eleM: 0 };
   const firstLatE7 = Math.round(first.lat * E7);
@@ -297,7 +297,7 @@ export class Decoder {
 }
 
 function decodeTelemetry(
-  f: livetrack.v1.TelemetryFrame.$Properties,
+  f: livetrace.v1.TelemetryFrame.$Properties,
   t0: number,
 ): LiveMetrics {
   const hAcc = num(f.hAccM);
@@ -330,7 +330,7 @@ function decodeTelemetry(
 }
 
 function decodeSources(
-  s: livetrack.v1.SourceFlags.$Properties | null | undefined,
+  s: livetrace.v1.SourceFlags.$Properties | null | undefined,
 ): TelemetrySources {
   return {
     position: PB_TO_SOURCE(s?.position),
@@ -341,7 +341,7 @@ function decodeSources(
 }
 
 function decodeRouteProgress(
-  r: livetrack.v1.RouteProgress.$Properties,
+  r: livetrace.v1.RouteProgress.$Properties,
 ): RouteProgress {
   const eta = num(r.etaEpochMs);
   const etaS = num(r.etaRemainingS);
@@ -359,7 +359,7 @@ function decodeRouteProgress(
   };
 }
 
-function decodeRouteMeta(r: livetrack.v1.RouteMeta.$Properties): RouteMeta {
+function decodeRouteMeta(r: livetrace.v1.RouteMeta.$Properties): RouteMeta {
   const points: RouteVertex[] = [];
   let lat = num(r.firstLatE7);
   let lon = num(r.firstLonE7);

@@ -1,5 +1,5 @@
 /**
- * LiveTrackSuunto — reference implementation of GPX route-snapping and
+ * LiveTrace — reference implementation of GPX route-snapping and
  * grade-adjusted dynamic ETA. Dependency-free; runs identically in the browser
  * viewer and in a Cloudflare Durable Object (both are V8 isolates).
  *
