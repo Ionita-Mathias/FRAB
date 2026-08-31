@@ -1,0 +1,160 @@
+// LiveTrace — canonical wire schema for the WebRTC DataChannel.
+//
+// This .proto is the SINGLE SOURCE OF TRUTH. Language bindings are generated,
+// never hand-written:
+//   TypeScript : ts-proto           -> packages/protocol/src/gen/
+//   Swift      : swift-protobuf      -> apps/mobile/ios (SPM plugin)
+//   Kotlin     : wire / protobuf-kt  -> apps/mobile/shared
+//
+// Transport note: frames are NOT sent as raw protobuf. The emitter serializes an
+// `Envelope`, then encrypts it with AES-256-GCM using the per-session key that
+// never leaves the clients (see docs/phase3/04 §Security). The bytes actually
+// written to the DataChannel (or to the DO fan-out socket) are:
+//
+//     [ 1 byte version ][ 12 byte GCM nonce ][ ciphertext + 16 byte tag ]
+//
+// so the Durable Object / TURN relay only ever sees ciphertext.
+
+syntax = "proto3";
+package livetrace.v1;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Envelope — every decrypted DataChannel frame is exactly one Envelope.
+// ─────────────────────────────────────────────────────────────────────────────
+message Envelope {
+  uint32 v = 1; // protocol version (currently 1)
+  oneof body {
+    SessionHello hello     = 2; // emitter -> viewer, once on channel open
+    RouteMeta    route      = 3; // emitter -> viewer, once (if a route is loaded)
+    TelemetryFrame telemetry = 4; // emitter -> viewer, ~1 Hz
+    SessionState state      = 5; // DO/emitter -> viewer, on change
+    Heartbeat    heartbeat  = 6; // keepalive when telemetry is paused
+    SessionEnd   end        = 7; // emitter/DO -> viewer, terminal
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Control messages
+// ─────────────────────────────────────────────────────────────────────────────
+message SessionHello {
+  string session_id    = 1; // UUIDv4 (also carried out-of-band in the link)
+  uint64 t0_epoch_ms   = 2; // session start; TelemetryFrame.t_ms is relative to this
+  string sport         = 3; // e.g. "trail_running", "cycling", "hiking"
+  string emitter_agent = 4; // "livetrace-ios/1.0.0"
+  bool   has_route     = 5;
+  uint32 sample_hz     = 6; // nominal emit rate (informational)
+}
+
+// Downsampled planned route, delta-encoded so the viewer can draw the planned trace.
+// Reconstruct absolute coordinates by prefix-summing the delta arrays:
+//   lat[0]=first_lat_e7; lat[i]=lat[i-1]+dlat_e7[i]; (same for lon, ele)
+message RouteMeta {
+  string route_id       = 1;
+  string name           = 2;
+  float  total_dist_m   = 3;
+  float  total_ascent_m = 4;
+  float  total_descent_m = 5;
+  sint32 first_lat_e7   = 6; // degrees * 1e7
+  sint32 first_lon_e7   = 7;
+  sint32 first_ele_dm   = 8; // decimeters
+  repeated sint32 dlat_e7 = 9  [packed = true];
+  repeated sint32 dlon_e7 = 10 [packed = true];
+  repeated sint32 dele_dm = 11 [packed = true];
+  BBox   bbox           = 12;
+}
+
+message BBox {
+  sint32 min_lat_e7 = 1;
+  sint32 min_lon_e7 = 2;
+  sint32 max_lat_e7 = 3;
+  sint32 max_lon_e7 = 4;
+}
+
+message SessionState {
+  TransportMode transport   = 1;
+  uint32        viewer_count = 2;
+  bool          emitter_live = 3;
+}
+
+enum TransportMode {
+  TRANSPORT_UNKNOWN   = 0;
+  TRANSPORT_P2P_DIRECT = 1; // host/srflx candidate pair
+  TRANSPORT_P2P_TURN   = 2; // relayed candidate pair (still E2EE)
+  TRANSPORT_EDGE_FANOUT = 3; // DO relay of ciphertext (P2P unavailable / too many viewers)
+}
+
+message Heartbeat { uint64 t_ms = 1; }
+
+message SessionEnd {
+  EndReason reason = 1;
+  string    detail = 2;
+}
+enum EndReason {
+  END_UNKNOWN   = 0;
+  END_COMPLETED = 1; // athlete finished / stopped
+  END_REVOKED   = 2; // owner hit the revocation API
+  END_EXPIRED   = 3; // token TTL elapsed
+  END_ERROR     = 4;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Telemetry — the hot path
+// ─────────────────────────────────────────────────────────────────────────────
+message TelemetryFrame {
+  uint32 seq  = 1; // monotonic per session, gap => packet loss
+  uint64 t_ms = 2; // ms since SessionHello.t0_epoch_ms (small integer, delta-friendly)
+
+  // Position
+  sint32 lat_e7      = 3; // degrees * 1e7  (~1.1 cm resolution, fits int32)
+  sint32 lon_e7      = 4;
+  float  alt_m       = 5; // fused baro/GPS altitude
+  float  h_acc_m     = 6; // horizontal accuracy; 0 = unknown
+  float  v_acc_m     = 7; // vertical accuracy;   0 = unknown
+  float  speed_mps   = 8; // instantaneous ground speed; <0 = unknown
+  float  course_deg  = 9; // 0..360 true north; <0 = unknown
+
+  // Physiology (0 / omitted when absent)
+  uint32 hr_bpm      = 10;
+  float  cadence_rpm = 11; // spm (run) or rpm (bike)
+  uint32 power_w     = 12;
+
+  // Session-cumulative derived metrics
+  float pace_s_per_km = 13; // smoothed; <=0 = unknown (e.g. stopped)
+  float gain_m        = 14; // cumulative ascent this session
+  float loss_m        = 15; // cumulative descent this session
+
+  // Route-relative (present iff RouteMeta was sent)
+  RouteProgress route = 16;
+
+  uint32      batt_pct = 17; // emitter battery, 0..100
+  SourceFlags src      = 18; // metric provenance
+}
+
+message RouteProgress {
+  float  dist_done_m        = 1;
+  float  dist_remaining_m   = 2;
+  float  ascent_remaining_m = 3;
+  float  descent_remaining_m = 4;
+  uint64 eta_epoch_ms       = 5; // absolute predicted finish; 0 = unknown/off-route
+  uint32 eta_remaining_s    = 6; // seconds to finish; 0 = unknown
+  float  fraction           = 7; // 0..1 progress along route
+  uint32 seg_index          = 8; // snapped polyline segment index
+  bool   off_route          = 9;
+  float  cross_track_m      = 10; // perpendicular distance to route
+}
+
+message SourceFlags {
+  Source position   = 1;
+  Source heart_rate = 2;
+  Source cadence    = 3;
+  Source power      = 4;
+}
+enum Source {
+  SOURCE_UNKNOWN         = 0;
+  SOURCE_PHONE_GPS       = 1; // CoreLocation / FusedLocationProvider
+  SOURCE_WATCH_BROADCAST = 2; // Suunto "Broadcast HR" (HR only)
+  SOURCE_BLE_SENSOR      = 3; // external strap / pod (0x180D/0x1814/0x1816/0x1818)
+  SOURCE_HEALTHKIT       = 4; // HKLiveWorkoutBuilder (iOS 26+)
+  SOURCE_HEALTH_SERVICES = 5; // Android Health Services (Wear companion)
+  SOURCE_DERIVED         = 6; // computed on device/edge
+}

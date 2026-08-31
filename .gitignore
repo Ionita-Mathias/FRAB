@@ -1,0 +1,37 @@
+# dependencies
+node_modules/
+.pnpm-store/
+
+# build output
+dist/
+.turbo/
+*.tsbuildinfo
+
+# generated protobuf bindings (rebuilt via `pnpm codegen`)
+packages/protocol/src/gen/
+
+# env & secrets — never commit
+.env
+.env.*
+!.env.example
+.dev.vars
+wrangler.toml.local
+
+# cloudflare
+.wrangler/
+
+# mobile
+apps/mobile/**/build/
+apps/mobile/**/.gradle/
+apps/mobile/iosApp/**/xcuserdata/
+*.xcworkspace/xcuserdata/
+Pods/
+
+# web
+.next/
+out/
+
+# misc
+.DS_Store
+*.log
+coverage/
