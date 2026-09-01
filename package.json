@@ -14,6 +14,10 @@
     "codegen": "turbo run codegen",
     "clean": "turbo run clean && rm -rf node_modules"
   },
+  "pnpm": {
+    "//": "workerd ships a platform binary and esbuild a native binary; both need their postinstall to run or the Workers test harness cannot start.",
+    "onlyBuiltDependencies": ["esbuild", "workerd"]
+  },
   "devDependencies": {
     "@types/node": "^26.2.0",
     "turbo": "^2.5.5",

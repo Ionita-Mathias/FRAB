@@ -1,0 +1,42 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "livetrace-signaling",
+  "main": "src/index.ts",
+
+  // >= 2026-08-04 enables nodejs_compat / nodejs_compat_v2 by default, so
+  // compatibility_flags is deliberately omitted rather than set redundantly.
+  "compatibility_date": "2026-08-04",
+
+  "observability": { "enabled": true },
+
+  "durable_objects": {
+    "bindings": [
+      { "name": "SESSION", "class_name": "SessionDurableObject" },
+      { "name": "RATE_LIMITER", "class_name": "RateLimiterDurableObject" }
+    ]
+  },
+
+  // NOTE: this uses the legacy `migrations` array rather than the newer
+  // declarative `exports` map (introduced 2026-07-04). That is a deliberate
+  // choice, not an oversight:
+  //   - the migrations -> exports transition is ONE-WAY; once deployed with
+  //     `exports`, a Worker cannot go back;
+  //   - `exports` and `migrations` are mutually exclusive (hard validation
+  //     error if both are present);
+  //   - support for `exports` in the Vitest test harness is unverified here.
+  // Since P2 only needs local + CI testing, we stay on the reversible path and
+  // revisit `exports` at deploy time (P7), when it can be validated end to end.
+  //
+  // SQLite is the only backend available for new namespaces on any plan, so
+  // these are declared as new_sqlite_classes.
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["SessionDurableObject", "RateLimiterDurableObject"]
+    }
+  ],
+
+  "vars": {
+    "SESSION_TTL_SEC": "21600"
+  }
+}

@@ -57,14 +57,15 @@ Phone GPS ───→ │ Emitter │ ←── WSS signaling ──> [ CF Work
 ## Repository
 
 ```
+apps/signaling/      Cloudflare Workers + Durable Objects signaling edge
 packages/protocol/   wire schema (telemetry.proto), codec, AES-GCM frame E2EE
 packages/geo/        GPX preprocessing, route snapping, grade-adjusted ETA
 docs/                feasibility audit + architecture specification
 ```
 
 Planned (see the [roadmap](docs/phase3/04-project-structure-and-roadmap.md#3-execution-roadmap-infrastructure--deploy)):
-`apps/signaling` (Workers + Durable Objects), `apps/mobile` (KMP), `apps/web`
-(Next.js + MapLibre), `suuntoplus-app` (on-watch display).
+`apps/mobile` (KMP), `apps/web` (Next.js + MapLibre), `suuntoplus-app`
+(on-watch display).
 
 ## Development
 
@@ -83,8 +84,8 @@ pnpm test
 |---|---|
 | P0 — Monorepo foundations, CI | ✅ done |
 | P1 — Protocol package (schema, codec, E2EE, golden vectors) | ✅ done |
-| P2 — Edge signaling (Worker + Durable Object) | next |
-| P3 — WebRTC core + transport fallback | planned |
+| P2 — Edge signaling (Worker + Durable Object) | ✅ done |
+| P3 — WebRTC core + transport fallback | next |
 | P4 — Mobile relay (KMP) | planned |
 | P5 — Web viewer | planned |
 | P6 — Suunto integration (OAuth, routes, FIT reconciliation) | planned |
