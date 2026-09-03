@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android TV home-screen banner, 320x180dp.
+
+  Drawn with shapes only: vector drawables cannot render text, and a raster banner would
+  need one asset per density. The glyph is the same stacked-server mark as the launcher icon
+  so the app is recognisable in both places.
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+
+    <path
+        android:fillColor="#0B1016"
+        android:pathData="M0,0h320v180H0z" />
+
+    <!-- A soft accent wedge in the lower right corner. -->
+    <path
+        android:fillColor="#141F2C"
+        android:pathData="M320,60L320,180L120,180z" />
+
+    <!-- Server chassis, upper unit. -->
+    <path
+        android:fillColor="#3DA9FC"
+        android:pathData="M42,50h92a6,6 0,0 1,6 6v26a6,6 0,0 1,-6 6H42a6,6 0,0 1,-6 -6V56a6,6 0,0 1,6 -6z" />
+    <path
+        android:fillColor="#0B1016"
+        android:pathData="M58,69m-7,0a7,7 0,1 1,14 0a7,7 0,1 1,-14 0" />
+    <path
+        android:fillColor="#0B1016"
+        android:pathData="M86,63h40v4h-40z" />
+    <path
+        android:fillColor="#0B1016"
+        android:pathData="M86,72h28v4h-28z" />
+
+    <!-- Server chassis, lower unit. -->
+    <path
+        android:fillColor="#1B6FB8"
+        android:pathData="M42,98h92a6,6 0,0 1,6 6v26a6,6 0,0 1,-6 6H42a6,6 0,0 1,-6 -6v-26a6,6 0,0 1,6 -6z" />
+    <path
+        android:fillColor="#0B1016"
+        android:pathData="M58,117m-7,0a7,7 0,1 1,14 0a7,7 0,1 1,-14 0" />
+    <path
+        android:fillColor="#0B1016"
+        android:pathData="M86,111h40v4h-40z" />
+    <path
+        android:fillColor="#0B1016"
+        android:pathData="M86,120h28v4h-28z" />
+
+    <!-- Radiating arcs standing in for the network broadcast. -->
+    <path
+        android:strokeColor="#3DA9FC"
+        android:strokeWidth="6"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:pathData="M186,112a34,34 0,0 1,0 -44" />
+    <path
+        android:strokeColor="#2FBF71"
+        android:strokeWidth="6"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:pathData="M212,126a58,58 0,0 1,0 -72" />
+    <path
+        android:strokeColor="#95A3B4"
+        android:strokeWidth="6"
+        android:fillColor="#00000000"
+        android:strokeLineCap="round"
+        android:pathData="M238,140a82,82 0,0 1,0 -100" />
+</vector>

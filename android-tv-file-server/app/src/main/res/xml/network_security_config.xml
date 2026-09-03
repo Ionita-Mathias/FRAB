@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This app IS the cleartext server: it listens on plain HTTP on the local network, which
+     is what macOS Finder, Kodi and every browser on the LAN expect. No outbound traffic is
+     made, so permitting cleartext here does not weaken anything the app fetches. -->
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>
